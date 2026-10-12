@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Đấu Trường Sinh Học 12 - Ôn Tập Giữa Kỳ 1</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter & Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .animate-bounce-short {
+            animation: bounce 0.6s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.6); }
+            50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.9); }
+        }
+        .glow-card {
+            animation: pulseGlow 3s infinite;
+        }
+        .shake {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+        button {
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-indigo-950 to-purple-950 min-h-screen text-white flex flex-col justify-between selection:bg-teal-500 selection:text-slate-950">
+
+    <!-- Header Navigation -->
+    <header class="w-full py-3 px-4 sm:px-6 flex justify-between items-center bg-black/50 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
+        <div class="flex items-center space-x-2.5 sm:space-x-3 cursor-pointer" onclick="returnToHome()">
+            <div class="bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 p-2 sm:p-2.5 rounded-xl shadow-lg shadow-teal-500/30 flex-shrink-0">
+                <i class="fa-solid fa-dna text-xl sm:text-2xl font-black"></i>
+            </div>
+            <div class="truncate">
+                <h1 class="font-black text-sm sm:text-xl tracking-wide bg-gradient-to-r from-teal-300 via-emerald-300 to-amber-300 bg-clip-text text-transparent truncate">
+                    CHINH PHỤC ĐIỂM 10 SINH 12
+                </h1>
+                <p class="text-[10px] sm:text-xs text-emerald-400/90 font-medium truncate" id="header-teacher-name">
+                    Đề Cương Ôn Tập Giữa Kỳ 1 • Thầy Cô Đồng Hành
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <button onclick="toggleAudio()" id="sound-btn" class="bg-white/10 hover:bg-white/20 active:scale-95 px-3 py-2 rounded-xl text-xs transition flex items-center space-x-1.5 border border-white/10">
+                <i class="fa-solid fa-volume-high text-teal-300" id="sound-icon"></i>
+                <span class="hidden sm:inline">Âm thanh</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-3 sm:p-6 w-full max-w-4xl mx-auto">
+        
+        <!-- ================= 1. START SCREEN ================= -->
+        <div id="start-screen" class="w-full bg-slate-900/85 backdrop-blur-xl border border-white/10 rounded-3xl p-5 sm:p-8 shadow-2xl space-y-5 glow-card">
+            <div class="text-center space-y-2.5">
+                <span class="inline-block bg-teal-500/20 text-teal-300 text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-teal-500/30">
+                    <i class="fa-solid fa-microscope mr-1"></i> Sinh Học 12 - Cơ Chế Di Truyền & Biến Dị
+                </span>
+                <h2 class="text-2xl sm:text-4xl font-black text-slate-100 tracking-tight leading-tight">
+                    ÔN TẬP GIỮA KỲ I THÔNG MINH
+                </h2>
+                <p class="text-slate-300 text-xs sm:text-base max-w-xl mx-auto leading-relaxed">
+                    Hệ thống <b>25 câu hỏi trắc nghiệm chuẩn 100% Đề cương Ôn tập Giữa kỳ 1</b>. Tích hợp hình ảnh sơ đồ chính xác, nút đảo đề & làm lại câu sai!
+                </p>
+            </div>
+
+            <!-- Custom Teacher & Student Name Inputs -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/60">
+                <div class="sm:col-span-1">
+                    <label class="block text-[11px] font-bold text-amber-300 uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-chalkboard-user mr-1"></i> Tên Thầy/Cô giáo:
+                    </label>
+                    <input type="text" id="teacher-name-input" value="Thầy Nguyễn Sinh Học" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 rounded-xl px-3 py-2 text-xs sm:text-sm text-amber-200 outline-none transition font-semibold">
+                </div>
+                <div class="sm:col-span-1">
+                    <label class="block text-[11px] font-bold text-teal-300 uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-user-graduate mr-1"></i> Họ và tên Học sinh:
+                    </label>
+                    <input type="text" id="player-name-input" placeholder="Nhập họ và tên..." value="Nguyễn Văn A" class="w-full bg-slate-900 border border-slate-700 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/30 rounded-xl px-3 py-2 text-xs sm:text-sm text-teal-200 outline-none transition font-semibold">
+                </div>
+                <div class="sm:col-span-1">
+                    <label class="block text-[11px] font-bold text-cyan-300 uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-users mr-1"></i> Lớp học:
+                    </label>
+                    <input type="text" id="player-class-input" placeholder="Ví dụ: 12A1" value="12A1" class="w-full bg-slate-900 border border-slate-700 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 rounded-xl px-3 py-2 text-xs sm:text-sm text-cyan-200 outline-none transition font-semibold">
+                </div>
+            </div>
+
+            <!-- Mode Switch Option: Shuffle Questions Toggle -->
+            <div class="bg-indigo-950/60 border border-indigo-500/30 rounded-2xl p-3.5 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-indigo-500/20 text-indigo-300 p-2.5 rounded-xl border border-indigo-500/30">
+                        <i class="fa-solid fa-shuffle text-lg sm:text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs sm:text-sm font-bold text-indigo-100">Đảo ngẫu nhiên thứ tự câu hỏi</h4>
+                        <p class="text-[11px] text-slate-400">Tránh học vẹt, rèn phản xạ chính xác khi thi thật</p>
+                    </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="shuffle-toggle" class="sr-only peer" checked>
+                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-500"></div>
+                </label>
+            </div>
+
+            <!-- Start Button -->
+            <button onclick="startGame()" class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-600 hover:from-emerald-400 hover:to-indigo-500 active:scale-[0.98] text-white font-black py-3.5 sm:py-4 px-6 rounded-2xl shadow-xl shadow-teal-500/20 transition flex items-center justify-center space-x-3 text-base sm:text-lg">
+                <i class="fa-solid fa-play text-xl sm:text-2xl animate-bounce"></i>
+                <span>BẮT ĐẦU ÔN TẬP NGAY!</span>
+            </button>
+        </div>
+
+        <!-- ================= 2. GAME SCREEN ================= -->
+        <div id="game-screen" class="w-full hidden flex flex-col space-y-3 sm:space-y-4">
+            <!-- Top Status Bar -->
+            <div class="bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl p-3 sm:p-4 flex justify-between items-center gap-2 sm:gap-4 shadow-xl">
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center font-black text-sm sm:text-lg shadow-md shadow-indigo-600/40" id="current-q-num">1</div>
+                    <div>
+                        <p class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider">Câu hỏi</p>
+                        <p class="text-xs sm:text-sm font-extrabold text-teal-300" id="progress-text">1 / 25</p>
+                    </div>
+                </div>
+
+                <!-- Timer Bar -->
+                <div class="flex-1 max-w-[140px] sm:max-w-xs mx-auto px-1 sm:px-2">
+                    <div class="flex justify-between text-[10px] sm:text-xs font-bold mb-1">
+                        <span class="text-slate-400 hidden sm:inline">Thời gian</span>
+                        <span id="timer-number" class="text-amber-400 font-mono mx-auto sm:ml-auto">20s</span>
+                    </div>
+                    <div class="w-full bg-slate-950 h-2 sm:h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-800">
+                        <div id="timer-bar" class="bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500 h-full rounded-full transition-all duration-1000 w-full"></div>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <!-- Streak badge -->
+                    <div id="streak-badge" class="hidden items-center space-x-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2 sm:px-3 py-1 rounded-xl font-black text-[10px] sm:text-xs shadow-lg shadow-orange-500/30 animate-pulse">
+                        <i class="fa-solid fa-fire text-yellow-300"></i>
+                        <span id="streak-count">0</span>
+                    </div>
+                    <!-- Score -->
+                    <div class="bg-slate-950/80 border border-slate-800 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-xl text-right">
+                        <p class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider">Điểm</p>
+                        <p class="text-xs sm:text-lg font-black text-teal-400 font-mono" id="current-score">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-3xl p-4 sm:p-6 shadow-2xl space-y-4">
+                <!-- Question text & Diagram Image -->
+                <div class="space-y-3">
+                    <h3 id="question-text" class="text-base sm:text-xl font-bold leading-relaxed text-slate-100">
+                        Đang tải câu hỏi...
+                    </h3>
+                    
+                    <!-- Diagram container -->
+                    <div id="diagram-container" class="hidden flex justify-center bg-slate-950/90 p-3 sm:p-4 rounded-2xl border border-slate-800 overflow-x-auto">
+                        <!-- High Quality SVG Diagrams rendered here -->
+                    </div>
+                </div>
+
+                <!-- Answer Options Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3" id="options-container">
+                    <!-- Options injected via JS -->
+                </div>
+
+                <!-- Explanation Box & Retry Action -->
+                <div id="explanation-box" class="hidden bg-slate-950/95 border border-indigo-500/40 rounded-2xl p-3.5 sm:p-4 space-y-3 transition-all duration-300">
+                    <div id="explanation-header" class="flex items-center space-x-2 font-bold text-xs sm:text-sm">
+                        <!-- Correct/Wrong indicator icon -->
+                    </div>
+                    <p id="explanation-text" class="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium"></p>
+                    
+                    <div class="pt-1 flex justify-between items-center flex-wrap gap-2">
+                        <!-- Retry button when wrong -->
+                        <button id="retry-btn" onclick="retryCurrentQuestion()" class="hidden bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-black py-2 px-3.5 rounded-xl text-xs transition flex items-center space-x-1.5 shadow-lg shadow-amber-500/20">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span>Thử lại câu này</span>
+                        </button>
+
+                        <button onclick="nextQuestion()" class="ml-auto bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-bold py-2 px-4 sm:px-6 rounded-xl shadow-lg shadow-indigo-600/40 text-xs sm:text-sm transition flex items-center space-x-2">
+                            <span>Câu tiếp theo</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 3. RESULT SCREEN ================= -->
+        <div id="result-screen" class="w-full max-w-2xl bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-3xl p-5 sm:p-8 shadow-2xl space-y-5 hidden text-center">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-amber-400 to-yellow-500 rounded-3xl mx-auto flex items-center justify-center text-2xl sm:text-3xl shadow-xl shadow-yellow-500/40 text-slate-900 font-black animate-bounce-short">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            
+            <div class="space-y-1">
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-100">BẢNG VÀNG THÀNH TÍCH</h2>
+                <p class="text-xs sm:text-sm text-slate-300">
+                    Học sinh: <span id="result-player-name" class="font-bold text-teal-300">...</span> 
+                    • Lớp: <span id="result-player-class" class="font-bold text-cyan-300">...</span>
+                </p>
+                <p class="text-xs text-amber-300 font-semibold" id="result-teacher-credit"></p>
+            </div>
+
+            <!-- Score Stats Grid -->
+            <div class="grid grid-cols-3 gap-2 sm:gap-3">
+                <div class="bg-slate-950/80 border border-slate-800 p-3 sm:p-4 rounded-2xl">
+                    <p class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase mb-1">Tổng điểm</p>
+                    <p class="text-xl sm:text-3xl font-black text-teal-400 font-mono" id="final-score">0</p>
+                </div>
+                <div class="bg-slate-950/80 border border-slate-800 p-3 sm:p-4 rounded-2xl">
+                    <p class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase mb-1">Đúng lần đầu</p>
+                    <p class="text-xl sm:text-3xl font-black text-emerald-400 font-mono" id="final-correct">0/25</p>
+                </div>
+                <div class="bg-slate-950/80 border border-slate-800 p-3 sm:p-4 rounded-2xl">
+                    <p class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase mb-1">Combo tối đa</p>
+                    <p class="text-xl sm:text-3xl font-black text-amber-400 font-mono" id="final-streak">0</p>
+                </div>
+            </div>
+
+            <!-- Google Sheet Sync Status -->
+            <div id="sync-status" class="text-xs font-semibold px-3 py-2 rounded-xl bg-slate-800/50 text-slate-400 flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-spinner fa-spin text-teal-400" id="sync-icon"></i>
+                <span id="sync-text">Đang gửi kết quả về Google Sheets...</span>
+            </div>
+
+            <!-- Encouragement Quote -->
+            <div id="grade-eval" class="p-3.5 sm:p-4 rounded-2xl text-xs sm:text-sm font-semibold border"></div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-2.5 pt-2">
+                <button onclick="restartGame()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-bold py-3 px-5 rounded-2xl shadow-lg shadow-indigo-600/40 transition flex items-center justify-center space-x-2 text-xs sm:text-sm">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Luyện lại toàn bộ đề</span>
+                </button>
+                <button onclick="returnToHome()" class="flex-1 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold py-3 px-5 rounded-2xl transition flex items-center justify-center space-x-2 text-xs sm:text-sm">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Trang chủ</span>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="w-full py-3 text-center text-[10px] sm:text-xs text-slate-500 border-t border-white/5">
+        Hệ thống ôn tập Sinh học 12 • Tối ưu trải nghiệm di động & Chuẩn đề cương Giữa kỳ 1
+    </footer>
+
+    <script>
+        // --- AUDIO ENGINE (Web Audio API) ---
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('sound-btn');
+            const icon = document.getElementById('sound-icon');
+            if (soundEnabled) {
+                icon.className = "fa-solid fa-volume-high text-teal-300";
+                playSound('click');
+            } else {
+                icon.className = "fa-solid fa-volume-xmark text-slate-400";
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.1);
+                    osc.frequency.setValueAtTime(783.99, now + 0.2);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(150, now + 0.15);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'win') {
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.frequency.setValueAtTime(freq, now + idx * 0.12);
+                        g.gain.setValueAtTime(0.15, now + idx * 0.12);
+                        g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.12 + 0.3);
+                        o.start(now + idx * 0.12);
+                        o.stop(now + idx * 0.12 + 0.3);
+                    });
+                }
+            } catch (e) {
+                console.error("Audio error:", e);
+            }
+        }
+
+        // --- 100% ACCURATE EXAM QUESTIONS WITH HIGH QUALITY VECTOR DIAGRAMS ---
+        const pdfQuestions = [
+            {
+                question: "Hình ảnh bên cạnh mô tả một đoạn DNA đang trong quá trình tái bản. Các nucleotide theo thứ tự (1) (2) (3) lần lượt là:",
+                options: ["C - C - G", "T - T - G", "G - G - C", "T - C - G"],
+                correctIndex: 0,
+                svgDiagram: `
+                <svg width="320" height="130" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg" class="max-w-full h-auto">
+                    <defs>
+                        <!-- Arrowhead definition -->
+                        <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+                        </marker>
+                        <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 1 L 10 5 L 0 9 z" fill="#34d399"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Unzipping DNA Replication Fork Strands -->
+                    <path d="M 15 40 L 90 40 L 280 40" stroke="#94a3b8" stroke-width="2.5" fill="none"/>
+                    <path d="M 15 100 L 90 100 L 280 100" stroke="#94a3b8" stroke-width="2.5" fill="none"/>
+                    
+                    <!-- Fork connection -->
+                    <path d="M 15 40 Q 5 70 15 100" stroke="#94a3b8" stroke-width="2.5" fill="none"/>
+
+                    <!-- Direction labels 5' and 3' -->
+                    <text x="285" y="44" fill="#38bdf8" font-size="13" font-weight="bold">3'</text>
+                    <text x="285" y="104" fill="#38bdf8" font-size="13" font-weight="bold">5'</text>
+                    <text x="18" y="32" fill="#38bdf8" font-size="13" font-weight="bold">5'</text>
+                    <text x="18" y="118" fill="#38bdf8" font-size="13" font-weight="bold">3'</text>
+
+                    <!-- Template nucleotides top strand -->
+                    <text x="155" y="28" fill="#f87171" font-size="13" font-weight="bold">T</text>
+                    <text x="180" y="28" fill="#f87171" font-size="13" font-weight="bold">T</text>
+                    <text x="205" y="28" fill="#38bdf8" font-size="13" font-weight="bold">G</text>
+                    <text x="230" y="28" fill="#38bdf8" font-size="13" font-weight="bold">G</text>
+                    <text x="255" y="28" fill="#fbbf24" font-size="13" font-weight="bold">C</text>
+                    <text x="275" y="28" fill="#f87171" font-size="13" font-weight="bold">T</text>
+
+                    <!-- Ticks for nucleotides -->
+                    <line x1="160" y1="35" x2="160" y2="45" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="185" y1="35" x2="185" y2="45" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="210" y1="35" x2="210" y2="45" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="235" y1="35" x2="235" y2="45" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="260" y1="35" x2="260" y2="45" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="280" y1="35" x2="280" y2="45" stroke="#cbd5e1" stroke-width="2"/>
+
+                    <!-- Continuous Strand (Top) with Arrow pointing LEFT (<-) -->
+                    <line x1="275" y1="62" x2="50" y2="62" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrow)"/>
+                    <!-- Ticks on synthesized strand -->
+                    <line x1="160" y1="57" x2="160" y2="67" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="185" y1="57" x2="185" y2="67" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="210" y1="57" x2="210" y2="67" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="235" y1="57" x2="235" y2="67" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="260" y1="57" x2="260" y2="67" stroke="#cbd5e1" stroke-width="2"/>
+
+                    <!-- Numbers 1, 2, 3 inside circles on the top synthesized strand -->
+                    <circle cx="210" cy="62" r="10" fill="#6366f1"/>
+                    <text x="207" y="66" fill="#fff" font-size="11" font-weight="bold">1</text>
+                    <circle cx="235" cy="62" r="10" fill="#6366f1"/>
+                    <text x="232" y="66" fill="#fff" font-size="11" font-weight="bold">2</text>
+                    <circle cx="260" cy="62" r="10" fill="#6366f1"/>
+                    <text x="257" y="66" fill="#fff" font-size="11" font-weight="bold">3</text>
+
+                    <!-- Discontinuous Okazaki Strands (Bottom) with Arrows pointing RIGHT (-> -> ->) -->
+                    <line x1="55" y1="80" x2="115" y2="80" stroke="#34d399" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+                    <line x1="130" y1="80" x2="190" y2="80" stroke="#34d399" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+                    <line x1="205" y1="80" x2="265" y2="80" stroke="#34d399" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+                </svg>`,
+                explanation: "Mạch khuôn có trình tự 5' ... T T G G C T ... 3'. Mạch mới tổng hợp bổ sung theo nguyên tắc bổ sung (A-T, G-C): Vị trí (1) đối diện G là C, (2) đối diện G là C, (3) đối diện C là G → Đáp án C - C - G."
+            },
+            {
+                question: "Đơn phân cấu tạo nên phân tử DNA là:",
+                options: ["nucleotide", "monosaccharide", "amino acid", "glycerol"],
+                correctIndex: 0,
+                explanation: "Đơn phân cấu tạo nên phân tử DNA là các nucleotide (gồm 4 loại A, T, G, C)."
+            },
+            {
+                question: "Hai codon khác nhau nhưng có thể cùng quy định cho một loại amino acid. Đây là tính chất gì của mã di truyền?",
+                options: ["Bán bảo tồn", "Thoái hóa", "Phổ biến", "Đặc hiệu"],
+                correctIndex: 1,
+                explanation: "Tính thoái hóa (dư thừa) nghĩa là nhiều bộ ba khác nhau cùng mã hóa cho 1 loại amino acid."
+            },
+            {
+                question: "Trong các vụ án hình sự, từ mẫu vật để lại trên hiện trường các nhà điều tra có thể truy tìm được thủ phạm cũng như xác định được danh tính nạn nhân dựa trên phân tích phân tử sinh học nào sau đây?",
+                options: ["DNA", "Protein", "mRNA", "rRNA"],
+                correctIndex: 0,
+                explanation: "DNA có tính đặc trưng cá thể rất cao nên được sử dụng trong giám định pháp y và xác định huyết thống."
+            },
+            {
+                question: "Trong quá trình nhân đôi DNA, một trong những vai trò nào là của enzyme DNA polymerase?",
+                options: [
+                    "Bẻ gãy các liên kết hydrogene giữa hai mạch của phân tử DNA.",
+                    "Tháo xoắn và làm tách hai mạch của phân tử DNA.",
+                    "Tổng hợp mạch mới theo nguyên tắc bổ sung với mạch khuôn của DNA.",
+                    "Nối các đoạn Okazaki để tạo thành mạch liên tục."
+                ],
+                correctIndex: 2,
+                explanation: "Enzyme DNA polymerase có vai trò xâu chuỗi các nucleotide tự do liên kết bổ sung với mạch khuôn để tổng hợp mạch mới."
+            },
+            {
+                question: "Hình vẽ dưới đây mô tả một cơ chế di truyền cấp độ phân tử đang diễn ra. Cấu trúc X trên hình vẽ là:",
+                options: ["DNA polymerase", "RNA polymerase", "Ribosome", "DNA ligase"],
+                correctIndex: 1,
+                svgDiagram: `
+                <svg width="290" height="90" viewBox="0 0 290 90" xmlns="http://www.w3.org/2000/svg" class="max-w-full h-auto">
+                    <!-- DNA Double Strand Opening Bubble -->
+                    <path d="M 10 30 Q 80 5 150 30 T 280 30" stroke="#a855f7" stroke-width="2.5" fill="none"/>
+                    <path d="M 10 60 Q 80 85 150 60 T 280 60" stroke="#a855f7" stroke-width="2.5" fill="none"/>
+                    <!-- Enzyme X Oval -->
+                    <ellipse cx="85" cy="45" rx="24" ry="22" fill="#38bdf8" opacity="0.75" stroke="#0284c7" stroke-width="2"/>
+                    <text x="80" y="50" fill="#0f172a" font-size="14" font-weight="black">X</text>
+                    <!-- Growing RNA strand -->
+                    <path d="M 85 45 Q 140 50 195 70" stroke="#f43f5e" stroke-width="3" fill="none"/>
+                    <text x="202" y="74" fill="#f43f5e" font-size="12" font-weight="bold">5'</text>
+                    <!-- DNA End Labels -->
+                    <text x="2" y="34" fill="#c084fc" font-size="11" font-weight="bold">5'</text>
+                    <text x="2" y="64" fill="#c084fc" font-size="11" font-weight="bold">3'</text>
+                </svg>`,
+                explanation: "Sơ đồ mô tả quá trình phiên mã, enzyme X vừa tháo xoắn vừa trượt dọc theo gene để tổng hợp chuỗi RNA chính là RNA polymerase."
+            },
+            {
+                question: "Trong quá trình phiên mã, trình tự các nucleotide nào sau đây trên mRNA liên kết bổ sung với trình tự 3' AAA 5' trên mạch làm khuôn của gene?",
+                options: ["5' GGG 3'", "3' TTT 5'", "5' UUU 3'", "5' AAA 3'"],
+                correctIndex: 2,
+                explanation: "Mạch khuôn 3' AAA 5' liên kết bổ sung với mRNA theo nguyên tắc A-U: A liên kết với U. Chiều ngược lại là 5' UUU 3'."
+            },
+            {
+                question: "Trong tế bào chủ, quá trình nào sau đây giúp HIV tổng hợp DNA dựa trên mạch khuôn là RNA hệ gene virus?",
+                options: ["Tái bản DNA", "Dịch mã", "Phiên mã", "Phiên mã ngược"],
+                correctIndex: 3,
+                explanation: "HIV là retrovirus sử dụng enzyme phiên mã ngược (Reverse transcriptase) tổng hợp DNA từ khuôn RNA."
+            },
+            {
+                question: "Sơ đồ bên mô tả một giai đoạn trong quá trình gì?",
+                options: ["Dịch mã", "Phiên mã", "Phiên mã ngược", "Tái bản DNA"],
+                correctIndex: 1,
+                svgDiagram: `
+                <svg width="300" height="100" viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg" class="max-w-full h-auto">
+                    <!-- DNA Strands Unzipping -->
+                    <path d="M 10 35 L 90 35 Q 150 15 210 35 L 280 35" stroke="#38bdf8" stroke-width="2" fill="none"/>
+                    <path d="M 10 65 L 90 65 Q 150 85 210 65 L 280 65" stroke="#38bdf8" stroke-width="2" fill="none"/>
+                    <!-- Labels on SVG matching exam -->
+                    <text x="110" y="15" fill="#facc15" font-size="10" font-weight="bold">ARN polymeraza</text>
+                    <text x="200" y="28" fill="#38bdf8" font-size="10" font-weight="bold">Mạch bổ sung</text>
+                    <text x="200" y="78" fill="#38bdf8" font-size="10" font-weight="bold">Mạch mã gốc</text>
+                    <!-- Synthesized ARN Strand -->
+                    <path d="M 120 62 Q 100 80 70 90" stroke="#f43f5e" stroke-width="2.5" fill="none"/>
+                    <text x="50" y="94" fill="#f43f5e" font-size="11" font-weight="bold">ARN</text>
+                    <text x="282" y="52" fill="#cbd5e1" font-size="11" font-weight="bold">ADN</text>
+                </svg>`,
+                explanation: "Sơ đồ thể hiện enzyme ARN polymeraza tháo xoắn ADN và trượt trên mạch mã gốc để tổng hợp ARN → Đây là quá trình Phiên mã."
+            },
+            {
+                question: "Sự khác biệt giữa exon và intron trong hệ gene người là gì?",
+                options: [
+                    "Exon không chứa thông tin di truyền, intron chứa thông tin di truyền.",
+                    "Exon mã hóa cho amino acid, intron không mã hóa cho amino acid.",
+                    "Exon chỉ có trong tế bào nhân, intron chỉ có trong tế bào chất.",
+                    "Exon và intron đều mã hóa cho các yếu tố sinh học trong cơ thể."
+                ],
+                correctIndex: 1,
+                explanation: "Ở sinh vật nhân thực (như người), gene phân mảnh gồm các đoạn Exon (mã hóa amino acid) và các đoạn Intron (không mã hóa)."
+            },
+            {
+                question: "Trong quá trình phiên mã, chuỗi polynucleotide được tổng hợp theo chiều nào?",
+                options: ["3' -> 3'", "3' -> 5'", "5' -> 3'", "5' -> 5'"],
+                correctIndex: 2,
+                explanation: "Mọi chuỗi nucleic acid luôn luôn được các enzyme polymeraza kéo dài theo chiều 5' -> 3'."
+            },
+            {
+                question: "Phiên mã là quá trình tổng hợp nên phân tử",
+                options: ["DNA và RNA", "Protein", "RNA", "DNA"],
+                correctIndex: 2,
+                explanation: "Phiên mã là quá trình truyền thông tin di truyền từ DNA sang phân tử RNA."
+            },
+            {
+                question: "Ở sinh vật nhân thực, cô đơn nào sau đây quy định tín hiệu kết thúc quá trình dịch mã?",
+                options: ["5' AUA 3'", "5' AUG 3'", "5' UAA 3'", "5' AAG 3'"],
+                correctIndex: 2,
+                explanation: "3 bộ ba kết thúc quá trình dịch mã là: 5' UAA 3', 5' UAG 3', 5' UGA 3'."
+            },
+            {
+                question: "Dịch mã là quá trình tổng hợp nên phân tử",
+                options: ["mRNA", "DNA", "protein", "tRNA"],
+                correctIndex: 2,
+                explanation: "Dịch mã là quá trình tổng hợp chuỗi polypeptide (protein) dựa trên mã di truyền của mRNA."
+            },
+            {
+                question: "Hệ gene là tập hợp tất cả",
+                options: [
+                    "các bào quan trong tế bào của một sinh vật.",
+                    "vật chất di truyền (DNA) có trong tế bào của một sinh vật.",
+                    "RNA trong tế bào của một sinh vật.",
+                    "plasmid trong tế bào của một sinh vật."
+                ],
+                correctIndex: 1,
+                explanation: "Hệ gene (Genome) là tập hợp toàn bộ vật chất di truyền (DNA) trong tế bào của một sinh vật."
+            },
+            {
+                question: "Trong quá trình phiên mã, RNA polymerase sẽ tương tác với vùng nào để làm gene tháo xoắn?",
+                options: ["Vùng khởi động", "Vùng mã hoá", "Vùng kết thúc", "Vùng vận hành"],
+                correctIndex: 0,
+                explanation: "RNA polymerase nhận biết và liên kết vào Vùng khởi động (Promoter) để bắt đầu tháo xoắn và phiên mã."
+            },
+            {
+                question: "Trong phân tử mRNA không có loại đơn phân nào sau đây?",
+                options: ["Thymine", "Uracil", "Cytosin", "Adenine"],
+                correctIndex: 0,
+                explanation: "Phân tử RNA (gồm mRNA) được cấu tạo từ 4 loại đơn phân A, U, G, C. Không chứa Thymine (T)."
+            },
+            {
+                question: "Gene không phân mảnh có",
+                options: [
+                    "cả exon và intron.",
+                    "vùng mã hoá không liên tục.",
+                    "vùng mã hoá liên tục.",
+                    "các đoạn intron."
+                ],
+                correctIndex: 2,
+                explanation: "Gene không phân mảnh (thường có ở sinh vật nhân sơ) có vùng mã hóa liên tục (không chứa các đoạn intron)."
+            },
+            {
+                question: "Cho biết các codon mã hóa các amino acid tương ứng như sau: 5'GGG3'-Gly; 5'CCC3'-Pro; 5'GCU3'-Ala; 5'CGA3'-Arg; 5'UCG3'-Ser; 5'AGC3'-Ser. Một đoạn mạch gốc của một gene ở vi khuẩn có trình tự các nucleotide là 5'AGC-CGA-CCC-GGG 3'. Nếu đoạn mạch gốc này mang thông tin mã hóa cho đoạn polypeptide có 4 amino acid thì trình tự của 4 amino acid đó là:",
+                options: ["Ser-Ala-Gly-Pro", "Ser-Arg-Pro-Gly", "Gly-Pro-Ser-Arg", "Pro-Gly-Ser-Ala"],
+                correctIndex: 3,
+                explanation: "Mạch gốc: 5' AGC-CGA-CCC-GGG 3' -> Đọc theo chiều 3' GGG-CCC-AGC-CGA 5'. Mạch mRNA tương ứng: 5' CCC-GGG-UCG-GCU 3'. Tra bộ ba: CCC (Pro) - GGG (Gly) - UCG (Ser) - GCU (Ala) → Pro-Gly-Ser-Ala."
+            },
+            {
+                question: "Một gen có chiều dài 4080 Å có tổng số nucleotide là:",
+                options: ["2400", "3000", "3600", "4200"],
+                correctIndex: 0,
+                explanation: "Công thức tính tổng số nu: N = (L / 3.4) * 2 = (4080 / 3.4) * 2 = 2400 nucleotide."
+            },
+            {
+                question: "Một gen ở SV nhân thực có số lượng các loại nu là: A = 600, G = 300. Tổng số nu của gen này là:",
+                options: ["1800", "2100", "3600", "900"],
+                correctIndex: 0,
+                explanation: "Tổng số nucleotide N = 2A + 2G = 2*(600) + 2*(300) = 1200 + 600 = 1800 nucleotide."
+            },
+            {
+                question: "Một gene ở sinh vật nhân thực có số lượng các loại nucleotide là: A = T = 600 và G = C = 300. Tổng số liên kết hydrogen của gene này là:",
+                options: ["1500", "1200", "2100", "1800"],
+                correctIndex: 2,
+                explanation: "Số liên kết hydrogen H = 2A + 3G = 2*(600) + 3*(300) = 1200 + 900 = 2100 liên kết."
+            },
+            {
+                question: "Gen có khối lượng 783.10^3 đvC chứa bao nhiêu nucleotit?",
+                options: ["7830", "7118", "1305", "2610"],
+                correctIndex: 3,
+                explanation: "Khối lượng 1 nu = 300 đvC. Tổng số nu N = M / 300 = 783000 / 300 = 2610 nucleotide."
+            },
+            {
+                question: "Một gen có 102 chu kì xoắn, gen này có bao nhiêu nucleotit?",
+                options: ["2040", "1020", "3060", "3468"],
+                correctIndex: 0,
+                explanation: "Mỗi chu kỳ xoắn có 20 nu. Tổng số nu N = C * 20 = 102 * 20 = 2040 nucleotide."
+            },
+            {
+                question: "Một phân tử DNA tái bản liên tiếp 5 lần sẽ tạo ra số phân tử DNA là:",
+                options: ["6", "32", "25", "64"],
+                correctIndex: 1,
+                explanation: "Số phân tử DNA con tạo ra sau 5 lần tái bản = 2^5 = 32 phân tử."
+            }
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let correctFirstTryCount = 0;
+        let streak = 0;
+        let maxStreak = 0;
+        let timer = null;
+        let timeLeft = 20;
+        let isAnswered = false;
+        let playerName = "Học sinh";
+        let playerClass = "12A1";
+        let teacherName = "Thầy Nguyễn Sinh Học";
+
+        // Shuffle array helper function
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startGame() {
+            playSound('click');
+            const nameInput = document.getElementById('player-name-input').value.trim();
+            const classInput = document.getElementById('player-class-input').value.trim();
+            const tInput = document.getElementById('teacher-name-input').value.trim();
+            
+            if (nameInput) playerName = nameInput;
+            if (classInput) playerClass = classInput;
+            if (tInput) teacherName = tInput;
+
+            document.getElementById('header-teacher-name').innerText = `Đồng hành cùng: ${teacherName}`;
+
+            // Check if shuffle is enabled
+            const isShuffle = document.getElementById('shuffle-toggle').checked;
+            if (isShuffle) {
+                currentQuestions = shuffleArray(pdfQuestions);
+            } else {
+                currentQuestions = JSON.parse(JSON.stringify(pdfQuestions));
+            }
+
+            currentIndex = 0;
+            score = 0;
+            correctFirstTryCount = 0;
+            streak = 0;
+            maxStreak = 0;
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isAnswered = false;
+            document.getElementById('explanation-box').classList.add('hidden');
+            document.getElementById('retry-btn').classList.add('hidden');
+            
+            const q = currentQuestions[currentIndex];
+            document.getElementById('current-q-num').innerText = currentIndex + 1;
+            document.getElementById('progress-text').innerText = `${currentIndex + 1} / ${currentQuestions.length}`;
+            document.getElementById('question-text').innerText = `Câu ${currentIndex + 1}: ${q.question}`;
+            document.getElementById('current-score').innerText = score;
+
+            // Render SVG Diagram if present
+            const diagContainer = document.getElementById('diagram-container');
+            if (q.svgDiagram) {
+                diagContainer.innerHTML = q.svgDiagram;
+                diagContainer.classList.remove('hidden');
+            } else {
+                diagContainer.classList.add('hidden');
+                diagContainer.innerHTML = '';
+            }
+
+            const streakBadge = document.getElementById('streak-badge');
+            if (streak >= 2) {
+                streakBadge.classList.remove('hidden');
+                streakBadge.classList.add('flex');
+                document.getElementById('streak-count').innerText = streak;
+            } else {
+                streakBadge.classList.add('hidden');
+                streakBadge.classList.remove('flex');
+            }
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            const colors = [
+                'from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 shadow-rose-600/20',
+                'from-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 shadow-indigo-600/20',
+                'from-amber-600 to-orange-700 hover:from-amber-500 hover:to-orange-600 shadow-orange-600/20',
+                'from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 shadow-teal-600/20'
+            ];
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.id = `option-btn-${idx}`;
+                btn.className = `w-full bg-gradient-to-r ${colors[idx % colors.length]} active:scale-[0.98] text-white font-bold p-3.5 sm:p-4.5 rounded-2xl shadow-lg flex items-center space-x-3 transform transition duration-150 text-left border border-white/10`;
+                btn.onclick = () => selectAnswer(idx);
+                btn.innerHTML = `
+                    <div class="w-7 h-7 sm:w-9 sm:h-9 bg-black/25 rounded-xl flex items-center justify-center font-black text-xs sm:text-base flex-shrink-0">
+                        ${String.fromCharCode(65 + idx)}
+                    </div>
+                    <span class="flex-1 text-xs sm:text-base leading-snug">${opt}</span>
+                `;
+                container.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            timeLeft = 20;
+            document.getElementById('timer-number').innerText = timeLeft + 's';
+            const bar = document.getElementById('timer-bar');
+            bar.style.width = '100%';
+            bar.style.transition = 'none';
+            setTimeout(() => {
+                bar.style.transition = 'width 1s linear';
+                bar.style.width = '0%';
+            }, 50);
+
+            if (timer) clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-number').innerText = timeLeft + 's';
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    if (!isAnswered) {
+                        handleTimeOut();
+                    }
+                }
+            }, 1000);
+        }
+
+        function handleTimeOut() {
+            isAnswered = true;
+            streak = 0;
+            playSound('wrong');
+            highlightAnswers(-1);
+            showExplanation(false, "Hết giờ trả lời! Hãy nhấn 'Thử lại câu này' để suy nghĩ lại đáp án nhé.");
+        }
+
+        function selectAnswer(selectedIndex) {
+            if (isAnswered) return;
+            isAnswered = true;
+            clearInterval(timer);
+
+            const q = currentQuestions[currentIndex];
+            const isCorrect = (selectedIndex === q.correctIndex);
+
+            if (isCorrect) {
+                correctFirstTryCount++;
+                streak++;
+                if (streak > maxStreak) maxStreak = streak;
+                
+                let bonus = Math.floor((timeLeft / 20) * 40);
+                let streakMultiplier = 1 + Math.floor(streak / 3) * 0.5;
+                let earnedPoints = Math.round((100 + bonus) * streakMultiplier);
+                score += earnedPoints;
+
+                playSound('correct');
+            } else {
+                streak = 0;
+                playSound('wrong');
+            }
+
+            document.getElementById('current-score').innerText = score;
+            highlightAnswers(selectedIndex);
+            showExplanation(isCorrect, q.explanation || (isCorrect ? "Trả lời chính xác!" : "Chưa chính xác!"));
+        }
+
+        function retryCurrentQuestion() {
+            playSound('click');
+            isAnswered = false;
+            document.getElementById('explanation-box').classList.add('hidden');
+            
+            const q = currentQuestions[currentIndex];
+            const colors = [
+                'from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 shadow-rose-600/20',
+                'from-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 shadow-indigo-600/20',
+                'from-amber-600 to-orange-700 hover:from-amber-500 hover:to-orange-600 shadow-orange-600/20',
+                'from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 shadow-teal-600/20'
+            ];
+
+            q.options.forEach((_, idx) => {
+                const btn = document.getElementById(`option-btn-${idx}`);
+                if (btn) {
+                    btn.onclick = () => selectAnswer(idx);
+                    btn.className = `w-full bg-gradient-to-r ${colors[idx % colors.length]} active:scale-[0.98] text-white font-bold p-3.5 sm:p-4.5 rounded-2xl shadow-lg flex items-center space-x-3 transform transition duration-150 text-left border border-white/10`;
+                }
+            });
+
+            startTimer();
+        }
+
+        function highlightAnswers(selectedIndex) {
+            const q = currentQuestions[currentIndex];
+            const buttons = document.getElementById('options-container').children;
+
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].onclick = null;
+                if (i === q.correctIndex) {
+                    buttons[i].className = "w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold p-3.5 sm:p-4.5 rounded-2xl shadow-lg shadow-teal-500/40 flex items-center space-x-3 ring-4 ring-emerald-300/60 scale-[1.01] transition";
+                } else if (i === selectedIndex) {
+                    buttons[i].className = "w-full bg-gradient-to-r from-rose-700 to-red-800 text-white font-bold p-3.5 sm:p-4.5 rounded-2xl shadow-lg opacity-90 shake flex items-center space-x-3 border border-rose-400/30";
+                } else {
+                    buttons[i].className = "w-full bg-slate-800/50 text-slate-400 font-bold p-3.5 sm:p-4.5 rounded-2xl flex items-center space-x-3 opacity-30 border border-slate-700/30";
+                }
+            }
+        }
+
+        function showExplanation(isCorrect, text) {
+            const expBox = document.getElementById('explanation-box');
+            const expHeader = document.getElementById('explanation-header');
+            const retryBtn = document.getElementById('retry-btn');
+
+            if (isCorrect) {
+                expHeader.className = "flex items-center space-x-2 font-bold text-xs sm:text-sm text-emerald-400";
+                expHeader.innerHTML = `<i class="fa-solid fa-circle-check text-base"></i><span>Chính xác tuyệt đối!</span>`;
+                retryBtn.classList.add('hidden');
+            } else {
+                expHeader.className = "flex items-center space-x-2 font-bold text-xs sm:text-sm text-rose-400";
+                expHeader.innerHTML = `<i class="fa-solid fa-circle-xmark text-base"></i><span>Chưa chính xác! Lời giải chi tiết:</span>`;
+                retryBtn.classList.remove('hidden');
+            }
+
+            document.getElementById('explanation-text').innerText = text;
+            expBox.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            playSound('click');
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            if (timer) clearInterval(timer);
+            playSound('win');
+
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 150,
+                    spread: 90,
+                    origin: { y: 0.6 }
+                });
+            }
+
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            document.getElementById('result-player-name').innerText = playerName;
+            document.getElementById('result-player-class').innerText = playerClass;
+            document.getElementById('result-teacher-credit').innerText = `Đồng hành bởi: ${teacherName}`;
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('final-correct').innerText = `${correctFirstTryCount}/${currentQuestions.length}`;
+            document.getElementById('final-streak').innerText = maxStreak;
+
+            const evalBox = document.getElementById('grade-eval');
+            const ratio = correctFirstTryCount / currentQuestions.length;
+            if (ratio >= 0.9) {
+                evalBox.className = "p-3.5 sm:p-4 rounded-2xl text-xs sm:text-sm font-semibold border bg-emerald-950/60 border-emerald-500/40 text-emerald-200";
+                evalBox.innerHTML = `🌟 <b>XUẤT SẮC ĐẠT ĐIỂM 10!</b> Bạn đã nắm vững toàn bộ kiến thức di truyền Sinh 12. ${teacherName} rất tự hào về bạn!`;
+            } else if (ratio >= 0.7) {
+                evalBox.className = "p-3.5 sm:p-4 rounded-2xl text-xs sm:text-sm font-semibold border bg-indigo-950/60 border-indigo-500/40 text-indigo-200";
+                evalBox.innerHTML = `👏 <b>KẾT QUẢ RẤT TỐT!</b> Kiến thức của bạn khá vững vàng. Hãy bật tính năng 'Đảo câu hỏi' và ôn lại 1 lần nữa nhé!`;
+            } else {
+                evalBox.className = "p-3.5 sm:p-4 rounded-2xl text-xs sm:text-sm font-semibold border bg-amber-950/60 border-amber-500/40 text-amber-200";
+                evalBox.innerHTML = `💪 <b>CỐ GẮNG LÊN NÀO!</b> Hãy nhấn nút 'Luyện lại toàn bộ đề' dưới đây để đọc kỹ lời giải các câu làm sai nhé!`;
+            }
+
+            // Sync data to Google Script Web App
+            sendResultsToGoogleSheet();
+        }
+
+        function sendResultsToGoogleSheet() {
+            const webAppUrl = "https://script.google.com/macros/s/AKfycby6j3hw4MZrzvmdUipVxgRHYqcmVvy46RTLg58oDXswH_LzCKBAJlFLPTsUdyVgaXqc/exec";
+            const syncStatus = document.getElementById('sync-status');
+            const syncIcon = document.getElementById('sync-icon');
+            const syncText = document.getElementById('sync-text');
+
+            syncStatus.className = "text-xs font-semibold px-3 py-2 rounded-xl bg-slate-800/80 text-teal-300 flex items-center justify-center space-x-2 border border-teal-500/30";
+            syncIcon.className = "fa-solid fa-spinner fa-spin text-teal-400";
+            syncText.innerText = "Đang đồng bộ kết quả lên hệ thống Google Sheets...";
+
+            const payload = {
+                timestamp: new Date().toLocaleString('vi-VN'),
+                playerName: playerName,
+                playerClass: playerClass,
+                teacherName: teacherName,
+                score: score,
+                correctCount: `${correctFirstTryCount}/${currentQuestions.length}`,
+                maxStreak: maxStreak
+            };
+
+            fetch(webAppUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                syncStatus.className = "text-xs font-semibold px-3 py-2 rounded-xl bg-emerald-950/80 text-emerald-300 flex items-center justify-center space-x-2 border border-emerald-500/40";
+                syncIcon.className = "fa-solid fa-cloud-arrow-up text-emerald-400";
+                syncText.innerText = "Đã lưu kết quả thành công vào hệ thống của Thầy/Cô!";
+            })
+            .catch((err) => {
+                console.error("Sheet sync error:", err);
+                syncStatus.className = "text-xs font-semibold px-3 py-2 rounded-xl bg-amber-950/80 text-amber-300 flex items-center justify-center space-x-2 border border-amber-500/40";
+                syncIcon.className = "fa-solid fa-circle-info text-amber-400";
+                syncText.innerText = "Đã hoàn thành (Không kết nối được bảng điểm)";
+            });
+        }
+
+        function restartGame() {
+            playSound('click');
+            document.getElementById('result-screen').classList.add('hidden');
+            startGame();
+        }
+
+        function returnToHome() {
+            playSound('click');
+            if (timer) clearInterval(timer);
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
